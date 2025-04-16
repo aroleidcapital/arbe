@@ -4,3 +4,4 @@
 .venv/
 csv_port/
 **.csv
+**/tmp/

@@ -1,6 +1,52 @@
 # Aroleid Research Backtesting Environment (ARBE)
 
-Aroleid Research Backtesting Environment (ARBE) is a Python library for the rapid prototyping of trading strategies that are based on OHLC(V) data.
+Aroleid Research Backtesting Environment (ARBE) is a Python library for the rapid prototyping of price-based trading strategies.
+
+
+## Backtesting Engine
+
+### Core Architecture
+
+The Aroleid Research Backtesting Environment (ARBE) is architected around a single abstract base class, `BacktesterBase`, which encapsulates the entire backtesting workflow. To implement a custom strategy, users subclass `BacktesterBase` and define the two required abstract methods: `add_indicators()` and `strategy()`. This design ensures that users do not need to reimplement the underlying mechanics of the backtesting engine and enforces a clear separation between infrastructure and strategy logic.
+
+```python
+# ...
+
+class BacktesterBase(abc.ABC):
+    
+    # ...
+
+    @abc.abstractmethod
+    def add_indicators(self) -> None:
+        pass
+
+    @abc.abstractmethod
+    def strategy(self, row: pd.Series) -> None:
+        pass
+
+    # ...
+```
+
+### Flow of Data
+
+After the `BacktesterBase` class has been subclassed by the user by implementing the two necessary abstract methods, the historical market data can be loaded into a pandas dataframe from a local CSV file (in Databento format, see [Historical Market Data](#historical-market-data)) via the `load_historical_market_data()` method (an optional symbol filter can be applied if necessary).
+
+```python
+# ...
+
+# Subclass BacktesterBase abstract base class and implement the two abstract methods
+class Backtester(BacktesterBase):
+    def add_indicators(self) -> None:
+        # ...
+        
+    def strategy(self, row: pd.Series) -> None:
+        # ...
+
+# Instantiate the Backtester class and load historical market data
+backtester = Backtester()
+backtester.load_historical_data("path/to/csv/file.csv")
+```
+
 
 ## Historical Market Data
 
